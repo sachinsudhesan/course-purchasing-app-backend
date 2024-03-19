@@ -3,7 +3,7 @@
 const { string } = require("zod")
 const mongoose  = require("mongoose")
 
-mongoose.connect("mongodb+srv://sachinchandra276:Es03rgjqkvaglKq8@cluster1.v5ev7pa.mongodb.net/sac")
+mongoose.connect("mongodb://localhost:27017/sac")
 
 //define the schemas
 
