@@ -4,19 +4,48 @@ const router = express.Router()
 const { Admin } = require("../db/index")
 const { Course } = require("../db/index")
 const app = express()
+const jwt = require("jsonwebtoken")
+const { JWT_SECRET } = require("../config")
 
 
 router.post("/signup" , async function(req,res){
     const username = req.body.username
     const password = req.body.password
 
-    await Course.create({
+    await Admin.create({
         username : username,
         password : password
     })
     res.json({
         msg : 'admin created'
     })
+    
+})
+router.post("/signin" ,  async function(req,res){
+    const username = req.headers.username
+    const password = req.headers.password
+
+    const admin = await Admin.find({
+        username,
+        password
+    }) 
+    if(admin){ 
+        const token = jwt.sign({
+        username
+    },JWT_SECRET)
+    res.json({
+        token  
+    })
+    }else
+    {
+        res.json({
+            msg : "wrong username and password"
+        })
+    }
+    
+   
+
+    
     
 })
 router.post("/courses" , adminMiddleware, async function(req,res){
