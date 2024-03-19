@@ -3,6 +3,8 @@ const router = express.Router();
 const userMiddleware = require("../middlewares/user");
 const { User } = require("../db/index");
 const { Course } = require("../db/index");
+const jwt = require("jsonwebtoken")
+const { JWT_SECRET } = require("../config");
 
 
 
@@ -17,6 +19,28 @@ router.post("/signup" , async function(req,res){
     res.json({
         msg : "user created successfully"
     })
+})
+router.post("/signin" , async function(req,res){
+    const username = req.headers.username
+    const password = req.headers.password
+
+    const user = await User.findOne({
+        username : username,
+        password : password
+    })
+    if(user){
+        token = jwt.sign({
+            username
+        },JWT_SECRET)
+        res.json({
+            token
+        })
+    }
+    else{
+        res.json({
+            msg : "no such user"
+        })
+    }
 })
 router.post("/courses/:courseId" ,userMiddleware, async function(req,res){
     const username = req.headers.username
